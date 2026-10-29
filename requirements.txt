@@ -1,5 +1,5 @@
-strands-agents
-strands-agents-tools
-bedrock-agentcore
-bedrock-agentcore-starter-toolkit
-requests
+strands-agents==1.62.0
+strands-agents-tools==0.8.10
+bedrock-agentcore==1.25.1
+bedrock-agentcore-starter-toolkit==0.3.14
+requests==2.34.2
