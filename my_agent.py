@@ -18,7 +18,8 @@ def build_model():
     if os.getenv("MODEL_PROVIDER", "").lower() == "ollama":
         from strands.models.ollama import OllamaModel
 
-        return OllamaModel(host="http://localhost:11434", model_id="qwen3.8:27b")
+        host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        return OllamaModel(host=host, model_id="qwen3.8:27b")
     return None
 
 

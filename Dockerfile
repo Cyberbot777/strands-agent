@@ -12,6 +12,12 @@ ENV UV_SYSTEM_PYTHON=1 \
 COPY requirements.txt requirements.txt
 RUN uv pip install -r requirements.txt
 
+# Local development only: docker build --build-arg INSTALL_DEV=1 ...
+# Adds requirements-dev.txt (Ollama support). Unset by default, so production images exclude it.
+ARG INSTALL_DEV=""
+COPY requirements-dev.txt requirements-dev.txt
+RUN if [ -n "$INSTALL_DEV" ]; then uv pip install -r requirements-dev.txt; fi
+
 RUN uv pip install aws-opentelemetry-distro==0.12.2
 
 ENV DOCKER_CONTAINER=1
