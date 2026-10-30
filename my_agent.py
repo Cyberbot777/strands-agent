@@ -23,7 +23,22 @@ def build_model():
     return None
 
 
-agent = Agent(model=build_model(), system_prompt=SYSTEM_PROMPT, tools=[http_request])
+def setup_tracing():
+    # Local dev: Langfuse tracing when LANGFUSE_PUBLIC_KEY is set (needs requirements-dev.txt).
+    if os.getenv("LANGFUSE_PUBLIC_KEY"):
+        from langfuse import get_client
+
+        if not get_client().auth_check():
+            print("Langfuse auth check failed; check LANGFUSE_* settings", flush=True)
+
+
+setup_tracing()
+
+def create_agent():
+    return Agent(model=build_model(), system_prompt=SYSTEM_PROMPT, tools=[http_request])
+
+
+agent = create_agent()
 
 
 @app.entrypoint

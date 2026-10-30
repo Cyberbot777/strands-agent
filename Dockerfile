@@ -18,7 +18,9 @@ ARG INSTALL_DEV=""
 COPY requirements-dev.txt requirements-dev.txt
 RUN if [ -n "$INSTALL_DEV" ]; then uv pip install -r requirements-dev.txt; fi
 
-RUN uv pip install aws-opentelemetry-distro==0.12.2
+# Skipped in the dev image: it pins OpenTelemetry 1.33, which conflicts with the Langfuse SDK.
+# Run the dev image with `python -u my_agent.py` instead of the default opentelemetry-instrument CMD.
+RUN if [ -z "$INSTALL_DEV" ]; then uv pip install aws-opentelemetry-distro==0.12.2; fi
 
 ENV DOCKER_CONTAINER=1
 

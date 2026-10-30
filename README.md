@@ -65,6 +65,7 @@ MODEL_PROVIDER=ollama BYPASS_TOOL_CONSENT=true python test_agent.py
 | `MODEL_PROVIDER` | Set to `ollama` to use a local Ollama model. Anything else keeps the Bedrock default. | unset (Bedrock) |
 | `OLLAMA_HOST` | Ollama server URL (only used when `MODEL_PROVIDER=ollama`) | `http://localhost:11434` |
 | `BYPASS_TOOL_CONSENT` | Set to `true` to skip tool confirmation prompts | unset |
+| `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL` | Enable [Langfuse](https://langfuse.com/) tracing (see below) | unset (tracing off) |
 
 To serve the agent over HTTP locally, run `python my_agent.py` and check `curl http://localhost:8080/ping`. Prompts go to `POST /invocations` with a body like `{"prompt": "Hello"}`.
 
@@ -91,7 +92,21 @@ curl -X POST http://localhost:8080/invocations \
   -d '{"prompt": "Use your http_request tool to fetch https://api.github.com/repos/strands-agents/sdk-python and tell me how many stars it has."}'
 ```
 
+The dev image leaves out `aws-opentelemetry-distro` (its pinned OpenTelemetry version conflicts with the Langfuse SDK), so run it with `python -u my_agent.py` as above instead of the default `opentelemetry-instrument` command.
+
 `host.docker.internal` lets the container reach Ollama on your host (Docker Desktop on Windows and macOS). The container logs a harmless OpenTelemetry export error when no collector is running.
+
+### Tracing with Langfuse (local)
+
+Put your project keys in a git-ignored `.env` (no quotes around values, since `docker --env-file` keeps them):
+
+```
+LANGFUSE_PUBLIC_KEY=pk-lf-...
+LANGFUSE_SECRET_KEY=sk-lf-...
+LANGFUSE_BASE_URL=http://localhost:3000
+```
+
+Tracing turns on only when `LANGFUSE_PUBLIC_KEY` is set and needs `requirements-dev.txt`, so the deployed agent is unaffected. On the host, load the file and run as usual (`set -a; . ./.env; set +a`). In Docker, add `--env-file .env -e LANGFUSE_BASE_URL=http://host.docker.internal:3000` to the `docker run` command above.
 
 ## Project Structure
 

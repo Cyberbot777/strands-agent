@@ -1,2 +1,4 @@
 -r requirements.txt
-strands-agents[ollama]==1.62.0
+strands-agents[otel,ollama]==1.62.0
+langfuse==5.1.0
+python-dotenv==1.2.4

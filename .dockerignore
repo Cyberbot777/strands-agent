@@ -68,3 +68,6 @@ test_*.py
 # wheelhouse/
 
 DEPLOYMENT.md
+
+# Local evaluation scripts
+evals/
