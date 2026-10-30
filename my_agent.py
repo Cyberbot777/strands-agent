@@ -1,5 +1,7 @@
+import os
+
 from strands import Agent
-from strands_tools import http_request
+from strands.vended_tools import http_request
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 
 app = BedrockAgentCoreApp()
@@ -10,7 +12,17 @@ SYSTEM_PROMPT = (
     "You always end with 'Have a kind day!'"
 )
 
-agent = Agent(system_prompt=SYSTEM_PROMPT, tools=[http_request])
+
+def build_model():
+    # Local dev: MODEL_PROVIDER=ollama. Otherwise None -> Strands' Bedrock default.
+    if os.getenv("MODEL_PROVIDER", "").lower() == "ollama":
+        from strands.models.ollama import OllamaModel
+
+        return OllamaModel(host="http://localhost:11434", model_id="qwen3.8:27b")
+    return None
+
+
+agent = Agent(model=build_model(), system_prompt=SYSTEM_PROMPT, tools=[http_request])
 
 
 @app.entrypoint
