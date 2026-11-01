@@ -60,3 +60,7 @@ Thumbs.db
 # UV
 .uv/
 
+
+# Allure
+allure-results/
+allure-report/

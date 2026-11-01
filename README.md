@@ -108,6 +108,26 @@ LANGFUSE_BASE_URL=http://localhost:3000
 
 Tracing turns on only when `LANGFUSE_PUBLIC_KEY` is set and needs `requirements-dev.txt`, so the deployed agent is unaffected. On the host, load the file and run as usual (`set -a; . ./.env; set +a`). In Docker, add `--env-file .env -e LANGFUSE_BASE_URL=http://host.docker.internal:3000` to the `docker run` command above.
 
+### Evals and Allure report (local)
+
+The `strands-agent-golden` dataset in Langfuse holds 5 test prompts with expected outputs. Create it once, then run it either way (both need Ollama and the Langfuse keys, and both use `requirements-dev.txt`):
+
+```bash
+python -m evals.create_dataset     # create or update the dataset
+python -m evals.run_experiment     # Langfuse experiment run with scores
+python -m pytest                   # same items as pytest tests, results in allure-results/
+```
+
+Each pytest test records three checks as Allure steps (`ends_with_kind_day`, `tool_use_correct`, `meets_expected_output`), attaches the agent output, expected output and judge reasoning, and links to its Langfuse trace. To view the report you need the Allure command line, which requires [Node.js](https://nodejs.org/):
+
+```bash
+npm install -g allure
+allure generate allure-results -o allure-report --clean
+allure open allure-report          # serves the report locally; Ctrl+C to stop
+```
+
+`allure-results/` and `allure-report/` are git-ignored. Each pytest run replaces the previous results.
+
 ## Project Structure
 
 ```
