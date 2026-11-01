@@ -64,3 +64,6 @@ Thumbs.db
 # Allure
 allure-results/
 allure-report/
+
+# Local Claude instructions (not shared)
+CLAUDE.md
